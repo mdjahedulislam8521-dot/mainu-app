@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>মেসার্স মাঈনু এন্টারপ্রাইজ - কমপ্লিট সিস্টেম</title>
+    <style>
+        /* --- CSS STYLES --- */
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'SolaimanLipi','Arial',sans-serif}
+        body{background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;padding:8px;color:#333}
+        .app{max-width:900px;margin:0 auto;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.25);overflow:hidden;min-height:95vh;display:none;}
+        .app.active{display:block}
+        
+        /* Login Screen */
+        .login-screen{display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+        .login-box{background:#fff;padding:30px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.3);width:100%;max-width:360px;text-align:center}
+        .login-box h2{color:#667eea;margin-bottom:20px;font-size:24px}
+        .login-box input{width:100%;padding:12px;margin-bottom:15px;border:2px solid #dee2e6;border-radius:8px;font-size:16px}
+        .login-box input:focus{border-color:#667eea;outline:none}
+        .btn-full{width:100%;padding:12px;border:none;border-radius:8px;background:#667eea;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;transition:.2s}
+        .btn-full:hover{background:#5a6fd6}
+        
+        /* Header */
+        .header{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:14px;text-align:center;position:sticky;top:0;z-index:100}
+        .header h1{font-size:18px;margin:0}
+        .header small{opacity:.8;font-size:11px;display:block;margin-top:4px}
+        .shop-status{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;margin-left:8px;background:rgba(0,0,0,0.2);vertical-align:middle}
+        .shop-status.open{background:#28a745}.shop-status.closed{background:#dc3545}
+        .shop-closed-msg{background:#f8d7da;color:#721c24;padding:10px;text-align:center;font-weight:bold;margin-bottom:10px;border-radius:6px;display:none}
+        
+        /* Tabs */
+        .tabs{display:flex;overflow-x:auto;background:#f1f3f5;border-bottom:2px solid #dee2e6;position:sticky;top:53px;z-index:99}
+        .tabs::-webkit-scrollbar{height:0}.tab{flex:0 0 auto;padding:10px 12px;border:none;background:none;font-size:12px;font-weight:600;color:#666;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:.2s}
+        .tab.active{color:#667eea;border-bottom-color:#667eea;background:#fff}.tab:hover{background:#e9ecef}
+        
+        /* Pages */
+        .page{display:none;padding:12px;padding-bottom:40px;animation:fadeIn .3s}.page.active{display:block}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        .row{display:grid;gap:10px;margin-bottom:10px}.row2{grid-template-columns:1fr 1fr}
+        @media(max-width:500px){.row2{grid-template-columns:1fr}}
+        
+        .field{margin-bottom:10px}.field label{display:block;font-size:12px;font-weight:600;color:#333;margin-bottom:3px}
+        .field input,.field select,.field textarea{width:100%;padding:9px;border:2px solid #dee2e6;border-radius:6px;font-size:14px;transition:.2s}
+        .field input:focus,.field select:focus{outline:none;border-color:#667eea}
+        
+        /* Components */
+        .btn{padding:9px 16px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:5px}
+        .btn:active{transform:scale(.97)}.btn:disabled{background:#ccc !important;cursor:not-allowed;opacity:0.6;filter:grayscale(100%)}
+        .btn-p{background:#667eea;color:#fff}.btn-p:hover{background:#5a6fd6}
+        .btn-s{background:#28a745;color:#fff}.btn-s:hover{background:#22943e}
+        .btn-d{background:#dc3545;color:#fff}.btn-d:hover{background:#c82333}
+        .btn-w{background:#ffc107;color:#333}.btn-w:hover{background:#e0a800}.btn-g{background:#6c757d;color:#fff}
+        .btn-full{width:100%;justify-content:center;padding:11px}
+        .card{border:2px solid #e9ecef;border-radius:8px;padding:12px;margin-bottom:12px;background:#fff}
+        .card h3{font-size:15px;color:#667eea;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid #f1f3f5}
+        .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:12px}
+        .stat{padding:14px 10px;border-radius:8px;text-align:center;color:#fff}.stat h4{font-size:18px;font-weight:700}.stat p{font-size:11px;opacity:.9;margin-top:2px}
+        .bg1{background:linear-gradient(135deg,#667eea,#764ba2)}.bg2{background:linear-gradient(135deg,#28a745,#20c997)}.bg3{background:linear-gradient(135deg,#fd7e14,#ffc107)}.bg4{background:linear-gradient(135deg,#dc3545,#e83e8c)}.bg6{background:linear-gradient(135deg,#6f42c1,#e83e8c)}
+        
+        .tbl{width:100%;border-collapse:collapse;font-size:12px}.tbl th{background:#f8f9fa;color:#667eea;font-weight:700;text-align:left;padding:8px;border-bottom:2px solid #dee2e6;white-space:nowrap}
+        .tbl td{padding:7px 8px;border-bottom:1px solid #eee;white-space:nowrap}.tbl tr:hover{background:#f8f9fa}.tbl-wrap{overflow-x:auto}
+        .badge{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600}.badge-g{background:#d4edda;color:#155724}
+        .badge-r{background:#f8d7da;color:#721c24}.low{color:#dc3545;font-weight:700}
+        .alert{padding:10px;border-radius:6px;margin-bottom:10px;font-size:13px}.alert-i{background:#d1ecf1;color:#0c5460;border:1px solid #bee5eb}
+        
+        /* Modal */
+        .modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:999;align-items:center;justify-content:center;padding:15px}
+        .modal-bg.show{display:flex}.modal{background:#fff;border-radius:12px;padding:18px;width:100%;max-width:450px;max-height:85vh;overflow-y:auto}
+        .modal h3{font-size:16px;color:#667eea;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}.modal .x{font-size:22px;cursor:pointer;color:#999}
+        .modal .x:hover{color:#333}
+        
+        /* Summary Box */
+        .summary{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:14px;border-radius:8px;margin-bottom:12px}
+        .summary h4{text-align:center;margin-bottom:10px;font-size:15px}
+        .srow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.25);font-size:13px}
+        .srow:last-child{border-bottom:2px solid #fff;font-weight:700;font-size:15px;margin-top:6px;padding-top:8px}
+        
+        /* Toast & Others */
+        .pay-type{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.pay-type label{display:flex;align-items:center;gap:5px;padding:8px 12px;background:#f1f3f5;border-radius:6px;cursor:pointer;font-size:13px;flex:1;min-width:90px}
+        .pay-type input{accent-color:#667eea}
+        .toast{position:fixed;top:12px;right:12px;padding:10px 16px;border-radius:8px;color:#fff;font-size:13px;font-weight:600;z-index:9999;animation:slideIn .3s;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+        .toast.success{background:#28a745}.toast.error{background:#dc3545}.toast.info{background:#17a2b8}
+        @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+        .empty{text-align:center;padding:25px;color:#999}.empty span{font-size:36px;display:block;margin-bottom:8px;opacity:.3}.btns{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+        
+        /* Lock Logic */
+        .shop-lock-blur { position:relative; min-height:50px;}.shop-lock-blur.locked .lock-overlay { display:flex; }
+        .lock-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.7); z-index:5; display:none; align-items:center; justify-content:center; text-align:center; padding:20px; color:#dc3545; font-size:14px; font-weight:bold; backdrop-filter:blur(1px); pointer-events:none;}
+        body.write-locked input:not([readonly]), body.write-locked select, body.write-locked textarea, body.write-locked button.action-btn, body.write-locked .btns button:not(.print-btn) { pointer-events: none !important; opacity: 0.5 !important; filter: grayscale(100%) !important; cursor: not-allowed !important; background-color: #ccc !important; }
+        body.write-locked.admin-mode input:not([readonly]), body.write-locked.admin-mode select, body.write-locked.admin-mode textarea, body.write-locked.admin-mode button.action-btn, body.write-locked.admin-mode .btns button:not(.print-btn) { pointer-events: auto !important; opacity: 1 !important; filter: none !important; cursor: pointer !important; background-color: revert !important; }
+        .admin-only{display:none}
+    </style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-box">
+        <h2>🏪 মাঈনু এন্টারপ্রাইজ</h2>
+        <div class="field"><input type="tel" id="loginPhone" placeholder="মোবাইল নাম্বার" maxlength="11"></div>
+        <div class="field"><input type="password" id="loginPass" placeholder="পাসওয়ার্ড"></div>
+        <button class="btn-full" onclick="performLogin()">🔑 লগইন করুন</button>
+        <p style="margin-top:15px;font-size:12px;color:#666">অ্যাডমিন: 01825616022 | ইউজার: 01979807138</p>
+    </div>
+</div>
+
+<!-- Main App -->
+<div class="app" id="mainApp">
+    <div class="header">
+        <h1>🏪 মেসার্স মাঈনু এন্টারপ্রাইজ <span id="shopStatusBadge" class="shop-status open">খোলা</span></h1>
+        <small id="userRoleBadge">Admin Mode</small>
+    </div>
+
+    <div id="shopClosedMsg" class="shop-closed-msg">⛔ ইউজার অ্যাক্সেস বন্ধ করা হয়েছে</div>
+
+    <div class="tabs" id="tabBar">
+        <button class="tab active" data-tab="dash">📊 ড্যাশবোর্ড</button>
+        <button class="tab" data-tab="daily">💵 দৈনিক</button>
+        <button class="tab" data-tab="due">👥 কাস্টমার বাকি</button>
+        <button class="tab" data-tab="vendue">🏭 ভেন্ডর বাকি</button>
+        <button class="tab" data-tab="prod">📦 পণ্য</button>
+        <button class="tab" data-tab="vend">👤 ভেন্ডর</button>
+        <button class="tab" data-tab="buy">🛒 ক্রয়</button>
+        <button class="tab" data-tab="sell">💰 বিক্রয়</button>
+        <button class="tab" data-tab="stock">📋 স্টক</button>
+        <button class="tab" data-tab="report">📈 রিপোর্ট</button>
+        <button class="tab" data-tab="set">⚙️ সেটিংস</button>
+    </div>
+
+    <!-- Page: Dashboard -->
+    <div class="page active" id="pg-dash">
+        <div class="stats" id="dashStats"></div>
+        <div class="card"><h3>⚠️ স্টক সতর্কতা</h3><div id="lowStock"></div></div>
+        <div class="card admin-only" id="activityMonitorCard">
+            <h3>🔴 সর্বশেষ ইউজার অ্যাক্টিভিটি</h3>
+            <div class="tbl-wrap"><table class="tbl"><thead><tr><th>সময়</th><th>ইউজার</th><th>অ্যাকশন</th><th>বিবরণ</th></tr></thead><tbody id="activityLog"></tbody></table></div>
+        </div>
+        <div class="card"><h3>📊 সাম্প্রতিক বিক্রয়</h3><div id="recentSales"></div></div>
+    </div>
+
+    <!-- Page: Daily -->
+    <div class="page" id="pg-daily">
+        <div class="shop-lock-blur"><div class="lock-overlay">⛔ লিখিত অনুমতি বন্ধ</div>
+            <div class="card">
+                <h3>📅 রিপোর্ট তারিখ নির্বাচন ও প্রিন্ট</h3>
+                <div class="row row2">
+                    <div class="field"><label>তারিখ</label><input type="date" id="dailyDate"></div>
+                    <div class="field" style="display:flex;align-items:end"><button class="btn btn-w btn-full print-btn" style="background:#343a40;color:#fff" onclick="printDailyReport()">🖨️ হিসাব প্রিন্ট</button></div>
+                </div>
+            </div>
+            <div id="dailySummary"></div>
+            <div class="card"><div class="btns"><button class="btn btn-s action-btn" onclick="toggleExpenseForm()">➕ খরচ ফর্ম</button></div><div id="expFormDiv" style="display:none"><div class="field"><label>ধরন *</label><select id="expCat"><option value="">নির্বাচন</option><option>দোকান ভাড়া</option><option>বিদ্যুৎ বিল</option><option>পরিবহন</option><option>কর্মচারী বেতন</option><option>মেরামত</option><option>অন্যান্য</option></select></div><div class="field"><label>টাকা (৳) *</label><input type="number" id="expAmt" step="0.01" min="0"></div><div class="field"><label>বিবরণ</label><input type="text" id="expDesc" placeholder="ঐচ্ছিক"></div><div class="btns"><button class="btn btn-s action-btn" onclick="addExpense()">✅ সংরক্ষণ</button><button class="btn btn-g action-btn" onclick="$('expAmt').value='';$('expDesc').value=''">❌ বাতিল</button></div></div></div>
+            <div class="card"><h3>📋 আজকের খরচ</h3><div id="expList"></div></div>
+        </div>
+    </div>
+
+    <!-- Page: Customer Due -->
+    <div class="page" id="pg-due">
+        <div class="shop-lock-blur"><div class="lock-overlay">⛔ লিখিত অনুমতি বন্ধ</div>
+            <div class="card"><h3>💰 কাস্টমার বাকি আদায়</h3><div class="field"><label>কাস্টমার *</label><select id="dueCust" onchange="showCustDue()"><option value="">নির্বাচন করুন</option></select></div><div class="row row2"><div class="field"><label>বকেয়া</label><input type="number" id="custDueAmt" readonly></div><div class="field"><label>আদায় (৳) *</label><input type="number" id="payAmt" step="0.01" min="0"></div></div><div class="field"><label>তারিখ</label><input type="date" id="payDate"></div><button class="btn btn-s btn-full action-btn" onclick="collectDue()">✅ আদায় সংরক্ষণ</button></div>
+            <div class="card"><h3>📋 কাস্টমার বাকির তালিকা</h3><div id="dueList"></div></div>
+        </div>
+    </div>
+
+    <!-- Page: Vendor Due -->
+    <div class="page" id="pg-vendue">
+        <div class="shop-lock-blur"><div class="lock-overlay">⛔ লিখিত অনুমতি বন্ধ</div>
+            <div class="card"><h3>💰 ভেন্ডর বাকি পরিশোধ</h3><div class="field"><label>ভেন্ডর *</label><select id="vendueVend" onchange="showVendDue()"><option value="">নির্বাচন করুন</option></select></div><div class="row row2"><div class="field"><label>বকেয়া</label><input type="number" id="vendDueAmt" readonly></div><div class="field"><label>পরিশোধ (৳) *</label><input type="number" id="vendPayAmt" step="0.01" min="0"></div></div><div class="field"><label>তারিখ</label><input type="date" id="vendPayDate"></div><button class="btn btn-s btn-full action-btn" onclick="payVendorDue()">✅ পরিশোধ সংরক্ষণ</button></div>
+            <div class="card"><h3>📋 ভেন্ডর বাকির তালিকা</h3><div id="vendueList"></div></div>
+        </div>
+    </div>
+
+    <!-- Page: Products -->
+    <div class="page" id="pg-prod">
+        <div class="shop-lock-blur"><div class="lock-overlay">⛔ লিখিত অনুমতি বন্ধ</div>
+            <div class="btns"><button class="btn btn-s action-btn" onclick="openProdModal()">➕ নতুন পণ্য</button></div>
+            <div class="field"><label>🔍 খুঁজুন</label><input type="text" id="prodSearch" oninput="renderProducts()" placeholder="পণ্যের নাম..."></div>
+            <div class="tbl-wrap" id="prodTable"></div>
+        </div>
+    </div>
+
+    <!-- Page: Vendors -->
+    <div class="page" id="pg-vend">
+        <div class="shop-lock-blur"><div class="lock-overlay">⛔ লিখিত অনুমতি বন্ধ</div>
+            <div class="btns"><button class="btn btn-s action-btn" onclick="openVendModal()">➕ নতুন ভেন্ডর</button></div>
+            <div class="tbl-wrap" id="vendTable"></div>
+        </div>
+    </div>
+
+    <!-- Page: Purchase -->
+    <div class="page" id="pg-buy">
+        <div class="shop-lock-blur"><div class="lock-overlay">⛔ লিখিত অনুমতি বন্ধ</div>
+            <div class="card">
+                <h3>🛒 নতুন ক্রয়</h3>
+                <div class="row row2"><div class="field"><label>তারিখ *</label><input type="date" id="buyDate"></div><div class="field"><label>ভেন্ডর *</label><select id="buyVend"><option value="">নির্বাচন</option></select></div></div>
+                <div class="row row2"><div class="field"><label>পণ্য *</label><select id="buyProd"><option value="">নির্বাচন</option></select></div><div class="field"><label>পরিমাণ *</label><input type="number" id="buyQty" step="0.01" min="0.01" oninput="calcBuy()"></div></div>
+                <div class="row row2"><div class="field"><label>ক্রয়মূল্য/ইউনিট (৳) *</label><input type="number" id="buyPrice" step="0.01" min="0.01" oninput="calcBuy()"></div><div class="field"><label>মোট (৳)</label><input type="number" id="buyTotal" readonly></div></div>
+                <div class="field"><label style="color:#667eea;font-weight:700">💳 পেমেন্ট টাইপ *</label><div class="pay-type"><label><input type="radio" name="buyPayType" value="cash" checked onchange="toggleBuyPartial()"> 💵 নগদ</label><label><input type="radio" name="buyPayType" value="due" onchange="toggleBuyPartial()"> 💳 বাকি</label><label><input type="radio" name="buyPayType" value="partial" onchange="toggleBuyPartial()"> 💰 আংশিক</label></div></div>
+                <div id="buyPartialDiv" style="display:none"><div class="row row2"><div class="field"><label>জমা (৳)</label><input type="number" id="buyPaid" step="0.01" min="0" oninput="calcBuyPartial()"></div><div class="field"><label>বাকি (৳)</label><input type="number" id="buyDue" readonly class="low"></div></div></div>
+                <div class="field"><label>নোট</label><input type="text" id="buyNote" placeholder="ঐচ্ছিক"></div>
+                <div class="btns"><button class="btn btn-s action-btn" onclick="addPurchase()">✅ ক্রয় সংরক্ষণ</button><button class="btn btn-g action-btn" onclick="resetBuyForm()">❌ বাতিল</button></div>
+            </div>
+            <div class="card"><h3>🛒 ক্রয় ইতিহাস</h3><div id="buyList"></div></div>
+        </div>
+    </div>
+
+    <!-- Page: Sales -->
+    <div class="page" id="pg-sell">
+        <div class="shop-lock-blur"><div class="lock-overlay">⛔ লিখিত অনুমতি বন্ধ</div>
+            <div class="card">
+                <h3>💰 নতুন বিক্রয়</h3>
+                <div class="row row2"><div class="field"><label>তারিখ *</label><input type="date" id="sellDate"></div><div class="field"><label>কাস্টমার</label><input type="text" id="sellCust" placeholder="নাম"></div></div>
+                <div class="row row2"><div class="field"><label>মোবাইল</label><input type="tel" id="sellPhone" placeholder="০১৭..."></div><div class="field"><label>সোর্স ভেন্ডর *</label><select id="sellVendor" onchange="updateSellProductList()"><option value="">নির্বাচন করুন</option></select></div></div>
+                <div id="stockInfo" class="alert alert-i" style="display:none"></div>
+                <div class="row row2"><div class="field"><label>পণ্য *</label><select id="sellProd" onchange="showSellStock()"><option value="">ভেন্ডর নির্বাচন করুন</option></select></div><div class="field"><label>পরিমাণ *</label><input type="number" id="sellQty" step="0.01" min="0.01" oninput="calcSell()"></div></div>
+                <div class="row row2"><div class="field"><label>বিক্রয়মূল্য/ইউনিট (৳) *</label><input type="number" id="sellPrice" step="0.01" min="0.01" oninput="calcSell()"></div><div class="field"><label>মোট (৳)</label><input type="number" id="sellTotal" readonly></div></div>
+                <div class="field"><label style="color:#667eea;font-weight:700">💰 পেমেন্ট টাইপ *</label><div class="pay-type"><label><input type="radio" name="payType" value="cash" checked onchange="togglePartial()"> 💵 নগদ</label><label><input type="radio" name="payType" value="due" onchange="togglePartial()"> 💳 বাকি</label><label><input type="radio" name="payType" value="partial" onchange="togglePartial()"> 💰 আংশিক</label></div></div>
+                <div id="partialDiv" style="display:none"><div class="row row2"><div class="field"><label>জমা (৳)</label><input type="number" id="sellPaid" step="0.01" min="0" oninput="calcPartial()"></div><div class="field"><label>বাকি (৳)</label><input type="number" id="sellDue" readonly class="low"></div></div></div>
+                <div class="btns"><button class="btn btn-s action-btn" onclick="addSale()">✅ বিক্রয় সংরক্ষণ</button><button class="btn btn-g action-btn" onclick="resetSellForm()">❌ বাতিল</button></div>
+            </div>
+            <div class="card"><h3>💰 বিক্রয় ইতিহাস</h3><div id="sellList"></div></div>
+        </div>
+    </div>
+
+    <!-- Page: Stock -->
+    <div class="page" id="pg-stock">
+        <div class="row row2"><div class="field"><label>ভেন্ডর ফিল্টার</label><select id="stockVendFilter" onchange="renderStock()"><option value="">সকল ভেন্ডর</option></select></div><div class="field"><label>🔍 খুঁজুন</label><input type="text" id="stockSearch" oninput="renderStock()" placeholder="পণ্যের নাম..."></div></div>
+        <div class="btns"><button class="btn btn-s action-btn" onclick="exportStockCSV()">📥 CSV এক্সপোর্ট</button><button class="btn btn-p print-btn" onclick="printStockReport()">🖨️ স্টক রিপোর্ট প্রিন্ট</button></div>
+        <div class="tbl-wrap" id="stockTable"></div>
+    </div>
+
+    <!-- Page: Report -->
+    <div class="page" id="pg-report">
+        <div class="card">
+            <h3>📅 পরিসর নির্বাচন করুন</h3>
+            <div class="row row2">
+                <div class="field"><label>শুরু তারিখ</label><input type="date" id="repStart"></div>
+                <div class="field"><label>শেষ তারিখ</label><input type="date" id="repEnd"></div>
+            </div>
+            <div class="btns">
+                <button class="btn btn-p action-btn" onclick="genReport()">📊 রিপোর্ট দেখুন</button>
+                <button class="btn btn-s action-btn" onclick="exportFullCSV()">📥 সম্পূর্ণ CSV</button>
+            </div>
+        </div>
+        <div id="reportOut"></div>
+    </div>
+
+    <!-- Page: Settings -->
+    <div class="page" id="pg-set">
+        <div class="card admin-only"><h3>🏪 সিস্টেম কন্ট্রোল</h3><div class="pay-type" style="justify-content:center"><label class="stat bg2 admin-bypass" onclick="toggleShopStatus(true)">🟢 সিস্টেম খোলা</label><label class="stat bg4 admin-bypass" onclick="toggleShopStatus(false)">🔴 ইউজার লক</label></div></div>
+        <div class="card admin-only"><h3>⚙️ নিরাপত্তা</h3><button class="btn btn-d btn-full action-btn" onclick="logout()">🚪 লগআউট</button></div>
+        <div class="card"><h3>💾 ডাটা ব্যাকআপ</h3><div class="btns"><button class="btn btn-s action-btn" onclick="backupData()">💾 ডাউনলোড</button><button class="btn btn-w action-btn" onclick="$('restoreFile').click()">📂 রিস্টোর</button><input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restoreData(event)"></div></div>
+        <div class="card" style="border-color:#dc3545"><h3 style="color:#dc3545">⚠️ বিপজ্জনক জোন</h3><button class="btn btn-d btn-full admin-only action-btn" onclick="resetAll()">🗑️ সকল ডাটা মুছুন</button></div>
+    </div>
+</div>
+
+<!-- Modal: Product -->
+<div class="modal-bg" id="prodModal">
+    <div class="modal">
+        <h3>নতুন পণ্য <span class="x" onclick="closeModal('prodModal')">&times;</span></h3>
+        <div class="field"><label>নাম *</label><input type="text" id="pName"></div>
+        <div class="field"><label>ক্যাটাগরি *</label><select id="pCat"><option value="">নির্বাচন</option><option>বিচি</option><option>বাদাম</option><option>চনাবুট</option><option>অন্যান্য</option></select></div>
+        <div class="row row2"><div class="field"><label>ইউনিট *</label><select id="pUnit"><option>কেজি</option><option>পিস</option><option>লিটার</option></select></div><div class="field"><label>ন্যূনতম স্টক</label><input type="number" id="pMin" value="10" min="0"></div></div>
+        <div class="btns"><button class="btn btn-s action-btn" onclick="addProduct()">✅ সংরক্ষণ</button></div>
+    </div>
+</div>
+
+<!-- Modal: Vendor -->
+<div class="modal-bg" id="vendModal">
+    <div class="modal">
+        <h3>নতুন ভেন্ডর <span class="x" onclick="closeModal('vendModal')">&times;</span></h3>
+        <div class="field"><label>নাম *</label><input type="text" id="vName"></div>
+        <div class="field"><label>মোবাইল *</label><input type="tel" id="vPhone"></div>
+        <div class="field"><label>ঠিকানা</label><input type="text" id="vAddr"></div>
+        <div class="btns"><button class="btn btn-s action-btn" onclick="addVendor()">✅ সংরক্ষণ</button></div>
+    </div>
+</div>
+
+<script>
+// ========== CONFIG ==========
+const ADMIN_PHONE = '01825616022';
+const ADMIN_PASS = '486085';
+const USER_PHONE = '01979807138';
+const USER_PASS = '387180';
+
+let isLoggedIn = false;
+let isShopOpen = true; 
+let currentUser = { phone: '', role: 'admin' };
+
+const $=id=>document.getElementById(id);
+const today=()=>new Date().toISOString().split('T')[0];
+const fmt=n=>{n=parseFloat(n)||0;return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})};
+const bnDate=d=>d.split('-').reverse().join('/');
+
+function toast(msg,type='success'){
+    const t=document.createElement('div');
+    t.className='toast '+type;
+    t.innerText=msg;
+    document.body.appendChild(t);
+    setTimeout(()=>{t.style.opacity='0';t.style.transition='.3s';setTimeout(()=>t.remove(),300)},2500);
+}
+
+// ========== DATABASE ==========
+let DB={products:[],vendors:[],stock:[],purchases:[],sales:[],expenses:[],duePayments:[],vendorDuePayments:[],dailyCash:{},settings:{},activities:[]};
+
+function save(){
+    DB.lastUpdate=new Date().toISOString();
+    try{localStorage.setItem('mainuDB',JSON.stringify(DB));return true}catch(e){toast('Storage full','error');return false}
+}
+
+function load(){
+    try{
+        const d=localStorage.getItem('mainuDB');
+        if(d){
+            const p=JSON.parse(d);
+            DB.products=p.products||[];
+            DB.vendors=p.vendors||[];
+            DB.stock=p.stock||[];
+            DB.purchases=p.purchases||[];
+            DB.sales=p.sales||[];
+            DB.expenses=p.expenses||[];
+            DB.duePayments=p.duePayments||[];
+            DB.vendorDuePayments=p.vendorDuePayments||[];
+            DB.dailyCash=p.dailyCash||{};
+            DB.settings=p.settings||{};
+            DB.activities=p.activities||[];
+            if(DB.stock.length === 0 && DB.purchases.length > 0) migrateLegacyStock();
+            return true;
+        }
+        return false;
+    }catch(e){return false}
+}
+
+function migrateLegacyStock(){
+    const tempStockMap = {};
+    DB.purchases.forEach(p => {
+        const key = `${p.productId}_${p.vendorId}`;
+        if(!tempStockMap[key]) tempStockMap[key] = 0;
+        tempStockMap[key] += p.qty;
+    });
+    Object.keys(tempStockMap).forEach(key => {
+        const [pid, vid] = key.split('_').map(Number);
+        DB.stock.push({ id: Date.now() + Math.random(), productId: pid, vendorId: vid, qty: tempStockMap[key], avgCost: 0 });
+    });
+    save();
+}
+
+function initDefaults(){
+    if(DB.products.length>0) return;
+    const items=[['কালাবিচি','বিচি',10],['সাদাবিচি','বিচি',10],['গিরাবিচি','বিচি',10],['ফুটফুটে গিরাবিচি','বিচি',10],['পেলন বিচি','বিচি',10],['লাল পরাশ','বিচি',10],['সাদা পরাশ','বিচি',10],['৩ দানা বাদাম','বাদাম',5],['২ দানা বাদাম','বাদাম',5],['সোলতান বাদাম','বাদাম',5],['চনাবুট','চনাবুট',15]];
+    items.forEach((it,i)=>{
+        DB.products.push({id:Date.now()+i,name:it[0],category:it[1],unit:'কেজি',minStock:it[2]});
+    });
+    save();
+}
+
+// Stock & Logic Helpers
+function updateStock(pid, vid, qty, cost){
+    let entry = DB.stock.find(s => s.productId === pid && s.vendorId === vid);
+    if(!entry){
+        entry = { id: Date.now() + Math.random(), productId: pid, vendorId: vid, qty: 0, avgCost: 0 };
+        DB.stock.push(entry);
+    }
+    entry.qty = Math.max(0, entry.qty + qty);
+    if(qty > 0) entry.avgCost = cost;
+    save();
+    return entry;
+}
+
+// ========== SECURITY & PERMISSIONS ==========
+function checkPermission(actionType = 'write') {
+    if (currentUser.role === 'admin') return true; 
+    if (currentUser.role === 'user') {
+        if (actionType === 'view') return true; 
+        if (actionType === 'write') return isShopOpen; 
+    }
+    return false;
+}
+
+function updatePermissionUI() {
+    const body = document.body;
+    const msg = $('shopClosedMsg');
+    const badge = $('shopStatusBadge');
+    
+    const canWrite = checkPermission('write');
+    
+    if (!canWrite) {
+        body.classList.add('write-locked');
+        body.classList.remove('admin-mode'); // Ensure admin mode off
+        msg.style.display = 'block';
+        badge.textContent = 'লক মোড';
+        badge.className = 'shop-status closed';
+        document.querySelectorAll('.shop-lock-blur').forEach(el => el.classList.add('locked'));
+    } else {
+        body.classList.remove('write-locked');
+        body.classList.add(currentUser.role === 'admin' ? 'admin-mode' : 'user-mode');
+        msg.style.display = 'none';
+        badge.textContent = 'খোলা';
+        badge.className = 'shop-status open';
+        document.querySelectorAll('.shop-lock-blur').forEach(el => el.classList.remove('locked'));
+    }
+    // Re-bind admin elements visibility
+    document.querySelectorAll('.admin-only').forEach(el => {
+        el.style.display = (currentUser.role === 'admin') ? 'block' : 'none';
+    });
+}
+
+const originalOpenModal = (id) => {
+    if (!checkPermission('write')) {
+        toast('সিস্টেম লক করা আছে, পরিবর্তন করার অনুমতি নেই', 'error');
+        return;
+    }
+    $(id).classList.add('show');
+};
+const closeModal = (id) => { $(id).classList.remove('show'); };
+
+// ========== LOGIN & AUTH ==========
+function performLogin(){
+    const phone = $('loginPhone').value.trim();
+    const pass = $('loginPass').value;
+    const dbAdminPass = (DB.settings && DB.settings.adminPass) ? DB.settings.adminPass : ADMIN_PASS;
+    const dbUserPass = (DB.settings && DB.settings.userPass) ? DB.settings.userPass : USER_PASS;
+
+    if(phone === ADMIN_PHONE && pass === dbAdminPass) { currentUser = { phone, role: 'admin' }; }
+    else if(phone === USER_PHONE && pass === dbUserPass) { currentUser = { phone, role: 'user' }; }
+    else { toast('ভুল তথ্য','error'); return; }
+
+    isLoggedIn = true;
+    const savedStatus = localStorage.getItem('mainuShopStatus');
+    isShopOpen = (savedStatus !== 'closed');
+
+    $('loginScreen').style.display = 'none';
+    $('mainApp').classList.add('active');
+    $('userRoleBadge').textContent = (currentUser.role === 'admin') ? 'Admin Mode' : 'User Mode';
+    
+    updatePermissionUI();
+    initApp();
+}
+
+function logout(){
+    if(confirm('Logout?')){ location.reload(); }
+}
+
+function toggleShopStatus(status){
+    if(currentUser.role !== 'admin') return toast('Access Denied','error');
+    isShopOpen = status;
+    localStorage.setItem('mainuShopStatus', isShopOpen ? 'open' : 'closed');
+    updatePermissionUI();
+    toast(isShopOpen ? 'System Opened' : 'User Locked','info');
+}
+
+setInterval(()=>{
+    if(isLoggedIn && currentUser.role === 'user'){
+        const raw=localStorage.getItem('mainuShopStatus');
+        const isClosed = (raw === 'closed');
+        if(isClosed && isShopOpen) { isShopOpen = false; updatePermissionUI(); }
+        if(!isClosed && !isShopOpen) { isShopOpen = true; updatePermissionUI(); }
+    }
+}, 2000);
+
+// ========== DASHBOARD & DAILY ==========
+function calcDaySummary(date){
+    const ops=getOpeningCash(date);
+    const cSales=DB.sales.filter(s=>s.date===date && (s.payType==='cash'||s.payType==='partial')).reduce((a,s)=>a+(s.payType==='cash'?s.total:s.paid),0);
+    const newDue=DB.sales.filter(s=>s.date===date).reduce((a,s)=>a+(s.due||0),0);
+    const dueColl=(DB.duePayments||[]).filter(p=>p.date===date).reduce((a,p)=>a+p.amount,0);
+    const cBuy=DB.purchases.filter(p=>p.date===date && (p.payType==='cash'||p.payType==='partial')).reduce((a,p)=>a+(p.payType==='cash'?p.total:p.paid),0);
+    const vDue=DB.purchases.filter(p=>p.date===date).reduce((a,p)=>a+(p.due||0),0);
+    const vPay=(DB.vendorDuePayments||[]).filter(p=>p.date===date).reduce((a,p)=>a+p.amount,0);
+    const exp=(DB.expenses||[]).filter(e=>e.date===date).reduce((a,e)=>a+e.amount,0);
+    const closing=ops+cSales+dueColl-cBuy-vPay-exp;
+    
+    // Save closing for next day's opening
+    if(!DB.dailyCash[date]) DB.dailyCash[date]={};
+    DB.dailyCash[date].closing=Math.max(0,closing);
+    if(DB.dailyCash[date].opening == null) DB.dailyCash[date].opening = ops;
+    
+    return{opening:ops,cashSales:cSales,newCustomerDue:newDue,dueColl:dueColl,cashPurchase:cBuy,newVendorDue:vDue,vendorPay:vPay,totalExpense:exp,closing:closing};
+}
+
+function getOpeningCash(date){
+    if(DB.dailyCash[date] && DB.dailyCash[date].opening!=null) return DB.dailyCash[date].opening;
+    const prev=new Date(date);prev.setDate(prev.getDate()-1);
+    const ps=prev.toISOString().split('T')[0];
+    if(DB.dailyCash[ps] && DB.dailyCash[ps].closing!=null) return DB.dailyCash[ps].closing;
+    return DB.settings.openingCash||0;
+}
+
+function renderDaily(){
+    const dateInput=$('dailyDate');
+    if(!dateInput.value) dateInput.value=today();
+    const s=calcDaySummary(dateInput.value);
+    $('dailySummary').innerHTML=`<div class="summary"><h4>📆 ${bnDate(dateInput.value)} তারিখের হিসাব</h4><div class="srow"><span>শুরুর ক্যাশ</span><span>৳${fmt(s.opening)}</span></div><div class="srow"><span>➕ নগদ বিক্রয়</span><span>৳${fmt(s.cashSales)}</span></div><div class="srow"><span>➕ বাকি আদায়</span><span>৳${fmt(s.dueColl)}</span></div><div class="srow"><span>➖ নতুন বাকি</span><span>৳${fmt(s.newCustomerDue)}</span></div><div class="srow"><span>➖ নগদ ক্রয়</span><span>৳${fmt(s.cashPurchase)}</span></div><div class="srow"><span>➖ ভেন্ডর পেমেন্ট</span><span>৳${fmt(s.vendorPay)}</span></div><div class="srow"><span>➖ নতুন বাকি (Vendor)</span><span>৳${fmt(s.newVendorDue)}</span></div><div class="srow"><span>➖ খরচ</span><span>৳${fmt(s.totalExpense)}</span></div><div class="srow"><span>বর্তমান ক্যাশ</span><span>৳${fmt(s.closing)}</span></div></div>`;
+    
+    const exps=DB.expenses.filter(e=>e.date===dateInput.value);
+    if(exps.length) {$('expList').innerHTML=`<table class="tbl"><thead><tr><th>ধরন</th><th>টাকা</th><th>অ্যাকশন</th></tr></thead><tbody>${exps.map(e=>`<tr><td>${e.category}</td><td>৳${fmt(e.amount)}</td><td><button class="btn btn-d action-btn" style="padding:2px 6px;font-size:10px" onclick="delExpense(${e.id})">🗑️</button></td></tr>`).join('')}</tbody></table>`;} 
+    else {$('expList').innerHTML='<div class="empty">খরচ নেই</div>';}
+}
+
+function addExpense(){
+    if(!checkPermission('write')) return toast('অনুমোদন নেই (লক মোডে আছেন)','error');
+    const date=$('dailyDate').value||today(); const cat=$('expCat').value; const amt=parseFloat($('expAmt').value); const desc=$('expDesc').value.trim();
+    if(!cat||isNaN(amt)||amt<=0) return toast('সঠিক তথ্য দিন','error');
+    DB.expenses.push({id:Date.now(),date,category:cat,amount:amt,desc});
+    logActivity('Expense', `Tk ${fmt(amt)} ${cat}`);
+    save(); renderDaily(); $('expCat').value=''; $('expAmt').value=''; $('expDesc').value=''; toast('খরচ যুক্ত হয়েছে');
+}
+function delExpense(id){
+    if(!checkPermission('write')) return toast('অনুমোদন নেই','error');
+    if(!confirm('Delete?'))return;DB.expenses=DB.expenses.filter(e=>e.id!==id);save();renderDaily();toast('Deleted');
+}
+function toggleExpenseForm(){const el=$('expFormDiv');el.style.display=el.style.display==='none'?'block':'none';}
+
+// ========== PRINT SYSTEM ==========
+function printDailyReport(){
+    const date=$('dailyDate').value; if(!date) return toast('Select Date','error');
+    const s=calcDaySummary(date); const exps=DB.expenses.filter(e=>e.date===date);
+    const w=window.open('','_blank');
+    
+    const style = `
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
+            body { font-family: 'Hind Siliguri', sans-serif; padding: 40px; color: #333; }
+            h1 { text-align: center; color: #667eea; margin-bottom: 5px; font-size: 26px; }
+            .box { border: 2px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+            .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+            .last { border-top: 2px solid #000; font-weight: bold; font-size: 18px; margin-top: 10px; padding-top: 10px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+            th, td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; }
+            th { background: #f8f9fa; color: #667eea; font-weight: 600; }
+            .header-title { text-align: center; border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-bottom: 20px; }
+        </style>
+    `;
+
+    let html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Daily Report</title>${style}</head><body>
+        <div class="header-title"><h1>মেসার্স মাঈনু এন্টারপ্রাইজ</h1><p>দৈনিক হিসাব রিপোর্ট: ${bnDate(date)}</p></div>
+        <div class="box">
+            <div class="row"><span>শুরুর ক্যাশ</span><span>৳${fmt(s.opening)}</span></div>
+            <div class="row"><span>➕ নগদ বিক্রয়</span><span>৳${fmt(s.cashSales)}</span></div>
+            <div class="row"><span>➕ বাকি আদায়</span><span>৳${fmt(s.dueColl)}</span></div>
+            <div class="row"><span>➖ নতুন বাকি</span><span>৳${fmt(s.newCustomerDue)}</span></div>
+            <div class="row"><span>➖ নগদ ক্রয়</span><span>৳${fmt(s.cashPurchase)}</span></div>
+            <div class="row"><span>➖ ভেন্ডর পেমেন্ট</span><span>৳${fmt(s.vendorPay)}</span></div>
+            <div class="row"><span>➖ নতুন বাকি (Vendor)</span><span>৳${fmt(s.newVendorDue)}</span></div>
+            <div class="row"><span>➖ খরচ</span><span>৳${fmt(s.totalExpense)}</span></div>
+            <div class="row last"><span>বর্তমান ক্যাশ</span><span>৳${fmt(s.closing)}</span></div>
+        </div>`;
+    
+    if(exps.length){
+        html+=`<h3>আজকের খরচ</h3><table><thead><tr><th>ধরন</th><th>টাকা</th></tr></thead><tbody>
+        ${exps.map(e=>`<tr><td>${e.category}</td><td>৳${fmt(e.amount)}</td></tr>`).join('')}
+        </tbody></table>`;
+    }
+    
+    html+=`<p style="text-align:center; margin-top:50px; font-size:12px;">Generated: ${new Date().toLocaleString('bn-BD')}</p></body></html>`; 
+    w.document.write(html); w.document.close(); w.print();
+}
+
+function printInvoice(type, id){
+    let data, title, htmlTable;
+    if(type==='purchase'){
+        data=DB.purchases.find(x=>x.id===id);
+        const p=DB.products.find(x=>x.id===data.productId);
+        const v=DB.vendors.find(x=>x.id===data.vendorId);
+        title="ক্রয় রসিদ (Purchase Receipt)";
+        htmlTable=`<tr><th>Vendor</th><td>${v?v.name:'N/A'}</td></tr><tr><th>Date</th><td>${bnDate(data.date)}</td></tr><tr><th>Item</th><td>${p?p.name:'N/A'}</td></tr><tr><th>Qty</th><td>${data.qty} ${p?p.unit:''}</td></tr><tr><th>Rate</th><td>৳${fmt(data.price)}</td></tr><tr><th style="font-size:16px;font-weight:bold">Total</th><td style="font-size:16px;font-weight:bold">৳${fmt(data.total)}</td></tr>`;
+    } else if(type==='sale'){
+        data=DB.sales.find(x=>x.id===id);
+        const p=DB.products.find(x=>x.id===data.productId);
+        const v=DB.vendors.find(x=>x.id===data.vendorId);
+        title="বিক্রয় রসিদ (Sales Receipt)";
+        htmlTable=`<tr><th>Customer</th><td>${data.customer}</td></tr><tr><th>Vendor</th><td>${v?v.name:'N/A'}</td></tr><tr><th>Date</th><td>${bnDate(data.date)}</td></tr><tr><th>Item</th><td>${p?p.name:'N/A'}</td></tr><tr><th>Qty</th><td>${data.qty} ${p?p.unit:''}</td></tr><tr><th>Rate</th><td>৳${fmt(data.price)}</td></tr><tr><th style="font-size:16px;font-weight:bold">Total</th><td style="font-size:16px;font-weight:bold">৳${fmt(data.total)}</td></tr>`;
+    }
+    const w=window.open('','_blank');
+    const style=`<style>@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');body{font-family: 'Hind Siliguri', sans-serif;padding:20px}table{width:100%}th,td{text-align:left;padding:8px;border-bottom:1px solid #ddd}th{width:40%;background:#f5f5f5}h1,h2{text-align:center}</style>`;
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Invoice</title>${style}</head><body><h1>মেসার্স মাঈনু এন্টারপ্রাইজ</h1><h2>${title}</h2><table>${htmlTable}</table><p style="text-align:center;margin-top:20px;font-size:12px">Generated: ${new Date().toLocaleString('bn-BD')}</p></body></html>`);
+    w.document.close(); w.print();
+}
+
+// ========== VENDOR & PRODUCT ==========
+function renderVendors(){
+    let h='<table class="tbl"><thead><tr><th>আইডি</th><th>নাম</th><th>মোবাইল</th><th>অ্যাকশন</th></tr></thead><tbody>';
+    DB.vendors.forEach(v=>{h+=`<tr><td>${v.id}</td><td>${v.name}</td><td>${v.phone}</td><td><button class="btn btn-d action-btn" style="padding:2px 6px;font-size:10px" onclick="delVendor(${v.id})">🗑️</button></td></tr>`;});
+    h+='</tbody></table>'; $('vendTable').innerHTML=h || '<div class="empty">কোন ভেন্ডর নেই</div>';
+}
+
+function openVendModal(){ originalOpenModal('vendModal'); }
+function openProdModal(){ originalOpenModal('prodModal'); }
+
+function addVendor(){
+    if(!checkPermission('write')) return toast('অনুমোদন নেই (লক মোডে আছেন)','error');
+    const name=$('vName').value.trim(); const phone=$('vPhone').value.trim(); const addr=$('vAddr').value.trim();
+    if(!name || !phone) return toast('নাম ও মোবাইল দিন','error');
+    if(DB.vendors.find(v=>v.phone===phone)) return toast('এই নাম্বারটি আগে থেকেই আছে','error');
+    const id=Date.now();
+    DB.vendors.push({id,name,phone,address:addr});
+    logActivity('Vendor Added', name);
+    save(); closeModal('vendModal'); renderVendors();
+    $('vName').value=''; $('vPhone').value=''; $('vAddr').value='';
+    toast('ভেন্ডর তৈরি সফল');
+}
+
+function delVendor(id){
+    if(!checkPermission('write')) return toast('অনুমোদন নেই','error');
+    if(!confirm('Delete Vendor?'))return;
+    if(DB.purchases.some(p=>p.vendorId===id)) return toast('এই ভেন্ডরের লেনদেন আছে, মুছতে পারবেন না','error');
+    DB.vendors=DB.vendors.filter(v=>v.id!==id);
+    save(); renderVendors(); toast('Deleted');
+}
+
+function renderProducts(){
+    const search=$('prodSearch').value.toLowerCase();
+    let h='<table class="tbl"><thead><tr><th>নাম</th><th>ক্যাটাগরি</th><th>ইউনিট</th><th>ন্যূনতম</th></tr></thead><tbody>';
+    const filtered=DB.products.filter(p=>p.name.toLowerCase().includes(search)||p.category.toLowerCase().includes(search));
+    filtered.forEach(p=>{h+=`<tr><td>${p.name}</td><td>${p.category}</td><td>${p.unit}</td><td>${p.minStock}</td></tr>`;});
+    h+='</tbody></table>'; $('prodTable').innerHTML=h || '<div class="empty">পণ্য খুঁজে পাওয়া যায়নি</div>';
+}
+
+function addProduct(){
+    if(!checkPermission('write')) return toast('অনুমোদন নেই (লক মোডে আছেন)','error');
+    const name=$('pName').value.trim(); const cat=$('pCat').value; const unit=$('pUnit').value; const min=parseInt($('pMin').value);
+    if(!name||!cat) return toast('Fill Required Fields','error');
+    DB.products.push({id:Date.now(),name,category:cat,unit,minStock:min||10});
+    save(); closeModal('prodModal'); renderProducts(); $('pName').value='';
+    toast('পণ্য তৈরি সফল');
+}
+
+// ========== PURCHASE & SALES ==========
+function initBuy(){
+    $('buyDate').value=today();
+    let vo='<option value="">নির্বাচন</option>';
+    DB.vendors.forEach(v => vo += `<option value="${v.id}">${v.name}</option>`);
+    $('buyVend').innerHTML=vo;
+    let po='<option value="">নির্বাচন</option>';
+    DB.products.forEach(p => po += `<option value="${p.id}">${p.name}</option>`);
+    $('buyProd').innerHTML=po;
+    renderBuyHistory();
+}
+
+function calcBuy(){
+    const q=parseFloat($('buyQty').value)||0, p=parseFloat($('buyPrice').value)||0;
+    $('buyTotal').value = (q*p).toFixed(2);
+    toggleBuyPartial();
+}
+function toggleBuyPartial(){ const t = document.querySelector('input[name="buyPayType"]:checked').value; $('buyPartialDiv').style.display = (t==='partial') ? 'block' : 'none'; }
+function calcBuyPartial(){
+    const total = parseFloat($('buyTotal').value) || 0;
+    const paid = parseFloat($('buyPaid').value) || 0;
+    $('buyDue').value = (total - paid).toFixed(2);
+}
+
+function addPurchase(){
+    if(!checkPermission('write')) return toast('অনুমোদন নেই (লক মোডে আছেন)','error');
+    const date=$('buyDate').value, vid=parseInt($('buyVend').value), pid=parseInt($('buyProd').value);
+    const qty=parseFloat($('buyQty').value), price=parseFloat($('buyPrice').value), total=parseFloat($('buyTotal').value);
+    const payType=document.querySelector('input[name="buyPayType"]:checked').value, note=$('buyNote').value;
+    
+    if(!date||!vid||!pid||!qty||!price) return toast('Fill All','error');
+    
+    let paid=0, due=0;
+    if(payType==='cash'){paid=total;due=0;} else if(payType==='due'){paid=0;due=total;} else {paid=parseFloat($('buyPaid').value)||0;due=total-paid;}
+    
+    const id=Date.now();
+    updateStock(pid, vid, qty, price);
+    DB.purchases.push({id,date,vendorId:vid,productId:pid,qty,price,total,payType,paid,due,note});
+    
+    const vName=DB.vendors.find(x=>x.id===vid)?.name;
+    const pName=DB.products.find(x=>x.id===pid)?.name;
+    logActivity('Purchase', `${vName} - ${pName}`);
+    
+    save(); toast('ক্রয় সংরক্ষিত'); resetBuyForm(); renderBuyHistory();
+}
+
+function renderBuyHistory(){
+    const buys=DB.purchases.slice(-20).reverse();
+    if(buys.length===0){$('buyList').innerHTML='<div class="empty">No Data</div>';return;}
+    let h='<table class="tbl"><thead><tr><th>তারিখ</th><th>ভেন্ডর</th><th>পণ্য</th><th>মোট</th><th>অ্যাকশন</th></tr></thead><tbody>';
+    buys.forEach(b=>{
+        const v=DB.vendors.find(x=>x.id===b.vendorId); const p=DB.products.find(x=>x.id===b.productId);
+        h+=`<tr><td>${bnDate(b.date)}</td><td>${v?v.name:'?'}</td><td>${p?p.name:'?'}</td><td>৳${fmt(b.total)}</td><td><button class="btn btn-w print-btn" onclick="printInvoice('purchase', ${b.id})">🖨️</button></td></tr>`;
+    });
+    h+='</tbody></table>';$('buyList').innerHTML=h;
+}
+
+function initSell(){
+    $('sellDate').value=today();
+    let vo='<option value="">নির্বাসন করুন</option>';
+    DB.vendors.forEach(v=>vo+=`<option value="${v.id}">${v.name}</option>`);
+    $('sellVendor').innerHTML=vo;
+    renderSellHistory();
+}
+
+function updateSellProductList(){
+    const vid=parseInt($('sellVendor').value);
+    const sel=$('sellProd');
+    if(!vid){sel.innerHTML='<option value="">নির্বাসন করুন</option>';return;}
+    let po='<option value="">নির্বাসন</option>';
+    let avail=false;
+    DB.stock.forEach(s=>{
+        if(s.vendorId===vid && s.qty>0){
+            const p=DB.products.find(x=>x.id===s.productId);
+            if(p){avail=true;po+=`<option value="${p.id}">${p.name} (Stk:${s.qty})</option>`;}
+        }
+    });
+    if(!avail)po='<option value="">স্টক নেই</option>';
+    sel.innerHTML=po;
+}
+
+function addSale(){
+    if(!checkPermission('write')) return toast('অনুমোদন নেই (লক মোডে আছেন)','error');
+    const date=$('sellDate').value, customer=$('sellCust').value.trim()||'General', phone=$('sellPhone').value.trim();
+    const vid=parseInt($('sellVendor').value), pid=parseInt($('sellProd').value);
+    const qty=parseFloat($('sellQty').value), price=parseFloat($('sellPrice').value), total=parseFloat($('sellTotal').value);
+    const payType=document.querySelector('input[name="payType"]:checked').value;
+    if(!date||!vid||!pid||!qty||!price) return toast('Fill Info','error');
+
+    const stock=DB.stock.find(s=>s.productId===pid && s.vendorId===vid);
+    if(!stock || stock.qty<qty) return toast('স্টক শেষ! (Stock Empty)','error');
+
+    let paid=0, due=0;
+    if(payType==='cash'){paid=total;due=0;} else if(payType==='due'){paid=0;due=total;} else {paid=parseFloat($('sellPaid').value)||0;due=total-paid;}
+
+    const id=Date.now();
+    updateStock(pid, vid, -qty, 0);
+    DB.sales.push({id,date,customer,phone,vendorId:vid,productId:pid,qty,price,total,payType,paid,due});
+    
+    const pName=DB.products.find(x=>x.id===pid)?.name;
+    logActivity('Sale', `${customer} - ${pName}`);
+    save(); toast('বিক্রয় সফল'); resetSellForm(); renderSellHistory();
+}
+
+function renderSellHistory(){
+    const sales=DB.sales.slice(-20).reverse();
+    if(sales.length===0){$('sellList').innerHTML='<div class="empty">No Data</div>';return;}
+    let h='<table class="tbl"><thead><tr><th>তারিখ</th><th>কাস্টমার</th><th>পণ্য</th><th>মোট</th><th>অ্যাকশন</th></tr></thead><tbody>';
+    sales.forEach(s=>{
+        const p=DB.products.find(x=>x.id===s.productId);
+        h+=`<tr><td>${bnDate(s.date)}</td><td>${s.customer}</td><td>${p?p.name:'?'}</td><td>৳${fmt(s.total)}</td><td><button class="btn btn-w print-btn" onclick="printInvoice('sale', ${s.id})">🖨️</button></td></tr>`;
+    });
+    h+='</tbody></table>';$('sellList').innerHTML=h;
+}
+
+// ========== NAV & UTILS ==========
+document.querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click',function(){
+        if(!isLoggedIn) return;
+        document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+        document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+        this.classList.add('active');
+        $(`pg-${this.dataset.tab}`).classList.add('active');
+        refreshPage(this.dataset.tab);
+    });
+});
+
+function resetBuyForm(){$('buyQty').value='';$('buyPrice').value='';$('buyTotal').value='';$('buyNote').value='';}
+function resetSellForm(){$('sellQty').value='';$('sellPrice').value='';$('sellTotal').value='';$('sellCust').value=''}
+
+function refreshPage(tab){
+    if(tab === 'dash') renderDash();
+    if(tab === 'daily') renderDaily();
+    if(tab === 'buy') initBuy();
+    if(tab === 'sell') initSell();
+    if(tab === 'stock') renderStock();
+    if(tab === 'vend') renderVendors();
+    if(tab === 'prod') renderProducts();
+    if(tab === 'due') initDueList();
+    if(tab === 'vendue') initVendorDueList();
+}
+
+function calcSell(){$('sellTotal').value=((parseFloat($('sellQty').value)||0)*(parseFloat($('sellPrice').value)||0)).toFixed(2);togglePartial();}
+function calcPartial(){$('sellDue').value=((parseFloat($('sellTotal').value)||0)-(parseFloat($('sellPaid').value)||0)).toFixed(2);}
+function togglePartial(){$('partialDiv').style.display=(document.querySelector('input[name="payType"]:checked').value==='partial')?'block':'none';}
+function showSellStock(){
+    const pid = parseInt($('sellProd').value);
+    const vid = parseInt($('sellVendor').value);
+    const info = $('stockInfo');
+    if(!pid || !vid) { info.style.display = 'none'; return; }
+    const stock = DB.stock.find(s => s.productId === pid && s.vendorId === vid);
+    const p = DB.products.find(x => x.id === pid);
+    if(stock && p) {
+        info.style.display = 'block';
+        info.innerHTML = `বর্তমান স্টক: <strong>${stock.qty} ${p.unit}</strong>`;
+        if(stock.qty <= p.minStock) {
+            info.classList.remove('alert-i');
+            info.classList.add('alert');
+            info.style.background = '#f8d7da';
+            info.style.color = '#721c24';
+        } else {
+            info.classList.add('alert-i');
+            info.classList.remove('alert');
+            info.style.background = '#d1ecf1';
+            info.style.color = '#0c5460';
+        }
+    } else {
+        info.style.display = 'none';
+    }
+}
+
+// --- Report & Stock ---
+function renderStock(){
+    const search=$('stockSearch').value.toLowerCase();
+    const vFilter=parseInt($('stockVendFilter').value)||0;
+    let st=DB.stock;
+    if(vFilter) st=st.filter(s=>s.vendorId===vFilter);
+    let h='<table class="tbl"><thead><tr><th>পণ্য</th><th>ভেন্ডর</th><th>স্টক</th><th>ইউনিট</th></tr></thead><tbody>';
+    let count=0;
+    st.forEach(s=>{
+        const p=DB.products.find(x=>x.id===s.productId);
+        const v=DB.vendors.find(x=>x.id===s.vendorId);
+        if(p && v && (p.name.toLowerCase().includes(search)||p.category.toLowerCase().includes(search))){
+            h+=`<tr><td>${p.name}</td><td>${v.name}</td><td class="${s.qty<=p.minStock?'low':''}">${s.qty}</td><td>${p.unit}</td></tr>`;
+            count++;
+        }
+    });
+    h+='</tbody></table>'; $('stockTable').innerHTML = count ? h : '<div class="empty">কিছু পাওয়া যায়নি</div>';
+}
+
+function printStockReport(){
+     const w=window.open('','_blank');
+     const style=`<style>@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');body{font-family: 'Hind Siliguri', sans-serif;padding:20px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background:#667eea;color:#fff}h1,h2{text-align:center}</style>`;
+     let h=`<h1 style="text-align:center">বর্তমান স্টক রিপোর্ট</h1>
+     <table><thead><tr><th>পণ্য</th><th>ভেন্ডর</th><th>স্টক</th></tr></thead><tbody>`;
+     DB.stock.forEach(s=>{
+         const p=DB.products.find(x=>x.id===s.productId);
+         const v=DB.vendors.find(x=>x.id===s.vendorId);
+         if(p&&v) h+=`<tr><td>${p.name}</td><td>${v.name}</td><td>${s.qty} ${p.unit}</td></tr>`;
+     });
+     h+=`</tbody></table>`; w.document.write(h); w.document.close(); w.print();
+}
+
+function genReport(){
+    const start = $('repStart').value;
+    const end = $('repEnd').value;
+    if(!start || !end) return toast('তারিখ নির্বাচন করুন','error');
+
+    const sales = DB.sales.filter(s => s.date >= start && s.date <= end);
+    const purchases = DB.purchases.filter(p => p.date >= start && p.date <= end);
+    const expenses = DB.expenses.filter(e => e.date >= start && e.date <= end);
+    const dueColl = (DB.duePayments||[]).filter(d => d.date >= start && d.date <= end);
+    const vendPay = (DB.vendorDuePayments||[]).filter(d => d.date >= start && d.date <= end);
+
+    const totalSales = sales.reduce((sum, s) => sum + (s.payType==='cash'?s.total:s.paid), 0);
+    const totalNewCustDue = sales.reduce((sum, s) => sum + (s.due||0), 0);
+    const totalPurchase = purchases.reduce((sum, p) => sum + (p.payType==='cash'?p.total:p.paid), 0);
+    const totalNewVendDue = purchases.reduce((sum, p) => sum + (p.due||0), 0);
+    const totalExpense = expenses.reduce((sum, e) => sum + e.amount, 0);
+    const totalDueColl = dueColl.reduce((sum, d) => sum + d.amount, 0);
+    const totalVendPay = vendPay.reduce((sum, d) => sum + d.amount, 0);
+
+    const netCash = totalSales + totalDueColl - totalPurchase - totalVendPay - totalExpense;
+
+    const reportHTML = `
+        <div class="card">
+            <h3>📊 ${bnDate(start)} থেকে ${bnDate(end)} পর্যন্ত সামারি</h3>
+            <div class="summary">
+                <div class="srow"><span>🔹 মোট বিক্রয় (নগদ)</span><span>৳${fmt(totalSales)}</span></div>
+                <div class="srow"><span>🔹 মোট বাকি আদায়</span><span>৳${fmt(totalDueColl)}</span></div>
+                <div class="srow"><span>🔹 মোট নতুন বাকি (Customer)</span><span>৳${fmt(totalNewCustDue)}</span></div>
+                <div class="srow"><span>🔹 মোট ক্রয় (নগদ)</span><span>৳${fmt(totalPurchase)}</span></div>
+                <div class="srow"><span>🔹 মোট ভেন্ডর পেমেন্ট</span><span>৳${fmt(totalVendPay)}</span></div>
+                <div class="srow"><span>🔹 মোট নতুন বাকি (Vendor)</span><span>৳${fmt(totalNewVendDue)}</span></div>
+                <div class="srow"><span>🔹 মোট খরচ</span><span>৳${fmt(totalExpense)}</span></div>
+                <div class="srow" style="border-top:2px solid #fff; font-weight:700; font-size:16px; margin-top:10px; padding-top:10px"><span>💰 নীট ক্যাশ (Net Cash)</span><span>৳${fmt(netCash)}</span></div>
+            </div>
+        </div>
+    `;
+    $('reportOut').innerHTML = reportHTML;
+}
+
+function exportStockCSV(){
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Product Name,Vendor Name,Stock Qty,Unit\n";
+    DB.stock.forEach(s=>{
+        const p=DB.products.find(x=>x.id===s.productId);
+        const v=DB.vendors.find(x=>x.id===s.vendorId);
+        if(p&&v) csvContent += `${p.name},${v.name},${s.qty},${p.unit}\n`;
+    });
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `stock_report_${today()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function exportFullCSV(){
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Date,Type,Party,Item,Qty,Rate,Total,Paid,Due\n";
+    
+    // Sales
+    DB.sales.forEach(s => {
+        const p=DB.products.find(x=>x.id===s.productId);
+        csvContent += `${s.date},Sale,${s.customer},${p?p.name:'N/A'},${s.qty},${s.price},${s.total},${s.paid},${s.due}\n`;
+    });
+    // Purchases
+    DB.purchases.forEach(p => {
+        const v=DB.vendors.find(x=>x.id===p.vendorId);
+        const prod=DB.products.find(x=>x.id===p.productId);
+        csvContent += `${p.date},Purchase,${v?v.name:'N/A'},${prod?prod.name:'N/A'},${p.qty},${p.price},${p.total},${p.paid},${p.due}\n`;
+    });
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `full_report_${today()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function backupData(){
+    const data=JSON.stringify(DB,null,2);
+    const blob=new Blob([data],{type:'application/json'});
+    const link=document.createElement('a');
+    link.href=URL.createObjectURL(blob);
+    link.download=`mainu_backup_${today()}.json`;
+    document.body.appendChild(link);link.click();document.body.removeChild(link);
+}
+function restoreData(e){
+    const file=e.target.files[0];
+    if(!file) return;
+    const reader=new FileReader();
+    reader.onload=function(ev){
+        try{DB=JSON.parse(ev.target.result);save();location.reload();}
+        catch(err){toast('Invalid File','error');}
+    };
+    reader.readAsText(file);
+}
+function resetAll(){if(!checkPermission('write'))return toast('Access Denied','error');if(confirm('Delete All Data?')){localStorage.removeItem('mainuDB');location.reload();}}
+
+// --- Activity Log ---
+function logActivity(action, details){
+    if(!DB.activities) DB.activities=[];
+    DB.activities.unshift({time:new Date().toLocaleTimeString('bn-BD'), user:currentUser.role, action, details, id:Date.now()});
+    if(DB.activities.length>50) DB.activities.pop();
+    save();
+    if(currentUser.role==='admin') renderActivityLog();
+}
+
+function renderActivityLog(){
+    const logBody=$('activityLog');
+    if(!DB.activities || DB.activities.length===0) {logBody.innerHTML='<tr><td colspan="4">কোন অ্যাক্টিভিটি নেই</td></tr>'; return;}
+    let h=''; DB.activities.slice(0,10).forEach(a=>{h+=`<tr><td>${a.time}</td><td>${a.user}</td><td><span class="badge badge-g">${a.action}</span></td><td>${a.details}</td></tr>`;});
+    logBody.innerHTML=h;
+}
+
+function initSettings(){}
+
+// --- Due Lists ---
+function initDueList(){
+    let h='<table class="tbl"><thead><tr><th>কাস্টমার</th><th>বাকি</th><th>অ্যাকশন</th></tr></thead><tbody>';
+    const custMap={};
+    DB.sales.filter(s=>s.due>0).forEach(s=>{
+        if(!custMap[s.customer]) custMap[s.customer]=0;
+        custMap[s.customer]+=s.due;
+    });
+    let so='<option value="">নির্বাসন করুন</option>';
+    Object.keys(custMap).forEach(c=>{so+=`<option value="${c}">${c}</option>`;});
+    $('dueCust').innerHTML=so;
+
+    Object.keys(custMap).forEach(c=>{
+        h+=`<tr><td>${c}</td><td>৳${fmt(custMap[c])}</td><td>N/A</td></tr>`;
+    });
+    h+='</tbody></table>';
+    $('dueList').innerHTML = h || '<div class="empty">কোন বাকি নেই</div>';
+}
+
+function initVendorDueList(){
+    let h='<table class="tbl"><thead><tr><th>ভেন্ডর</th><th>বাকি</th><th>অ্যাকশন</th></tr></thead><tbody>';
+    const vendMap={};
+    DB.purchases.filter(p=>p.due>0).forEach(p=>{
+        const v=DB.vendors.find(x=>x.id===p.vendorId);
+        if(v){
+            if(!vendMap[v.name]) vendMap[v.name]=0;
+            vendMap[v.name]+=p.due;
+        }
+    });
+    let vo='<option value="">নির্বাসন করুন</option>';
+    Object.keys(vendMap).forEach(c=>{vo+=`<option value="${c}">${c}</option>`;});
+    $('vendueVend').innerHTML=vo;
+    
+    Object.keys(vendMap).forEach(c=>{
+        h+=`<tr><td>${c}</td><td>৳${fmt(vendMap[c])}</td><td>N/A</td></tr>`;
+    });
+    h+='</tbody></table>';
+    $('vendueList').innerHTML = h || '<div class="empty">কোন বাকি নেই</div>';
+}
+
+function renderDash(){
+    const t=today(); const s=calcDaySummary(t);
+    $('dashStats').innerHTML=`<div class="stat bg1"><h4>${DB.products.length}</h4><p>পণ্য</p></div><div class="stat bg2"><h4>৳${fmt(s.cashSales)}</h4><p>বিক্রয়</p></div><div class="stat bg3"><h4>৳${fmt(s.totalExpense)}</h4><p>খরচ</p></div><div class="stat bg4"><h4>৳${fmt(s.newCustomerDue)}</h4><p>নতুন বাকি</p></div><div class="stat bg6"><h4>৳${fmt(s.closing)}</h4><p>বর্তমান ক্যাশ</p></div>`;
+    
+    // Low Stock Alert
+    const lowItems = DB.stock.filter(s => {
+        const p = DB.products.find(x => x.id === s.productId);
+        return p && s.qty <= p.minStock;
+    });
+    if(lowItems.length > 0) {
+         $('lowStock').innerHTML = lowItems.map(s => {
+             const p = DB.products.find(x => x.id === s.productId);
+             return `<div style="padding:5px; border-bottom:1px solid #eee; font-size:12px;"><span style="color:#dc3545">⚠️</span> ${p.name}: <strong>${s.qty} ${p.unit}</strong> (Min: ${p.minStock})</div>`;
+         }).join('');
+    } else {
+        $('lowStock').innerHTML = '<div style="text-align:center;color:green;font-size:12px;">✅ সব স্টক ঠিক আছে</div>';
+    }
+
+    renderActivityLog();
+    
+    const sales=DB.sales.slice(-5).reverse();
+    if(sales.length){let h='<table class="tbl"><thead><tr><th>তারিখ</th><th>পণ্য</th><th>মোট</th></tr></thead><tbody>';sales.forEach(s=>{const p=DB.products.find(x=>x.id===s.productId);h+=`<tr><td>${bnDate(s.date)}</td><td>${p?p.name:'?'}</td><td>৳${fmt(s.total)}</td></tr>`;});h+='</tbody></table>';$('recentSales').innerHTML=h;}
+    else {$('recentSales').innerHTML='<div class="empty">No Sales</div>';}
+}
+
+function initApp(){
+    load(); initDefaults();
+    renderDash();
+    $('dailyDate').onchange=renderDaily;
+}
+setInterval(()=>save(),30000);
+window.addEventListener('beforeunload',save);
+
+function showCustDue(){
+    const name = $('dueCust').value;
+    if(!name) return;
+    let total=0;
+    DB.sales.filter(s=>s.customer===name && s.due>0).forEach(s=>total+=s.due);
+    $('custDueAmt').value = total.toFixed(2);
+}
+function showVendDue(){
+    const name = $('vendueVend').value;
+    if(!name) return;
+    let total=0;
+    DB.purchases.filter(p=>{
+        const v=DB.vendors.find(x=>x.id===p.vendorId);
+        return v && v.name===name && p.due>0;
+    }).forEach(p=>total+=p.due);
+    $('vendDueAmt').value = total.toFixed(2);
+}
+function collectDue(){
+    if(!checkPermission('write')) return toast('অনুমোদন নেই (লক মোডে আছেন)','error');
+    if(!confirm('আদায় সংরক্ষণ করবেন?')) return;
+    const name = $('dueCust').value;
+    const amt = parseFloat($('payAmt').value);
+    const date = $('payDate').value || today();
+    if(!name || !amt || amt <= 0) return toast('তথ্য দিন','error');
+    
+    let totalDue = 0;
+    const sales = DB.sales.filter(s=>s.customer===name && s.due>0);
+    sales.forEach(s=>totalDue+=s.due);
+    
+    if(amt > totalDue) return toast('বাকির চেয়ে বেশি টাকা দিচ্ছেন!','error');
+    
+    let remaining = amt;
+    sales.sort((a,b)=>a.id-b.id);
+    sales.forEach(s=>{
+        if(remaining <= 0) return;
+        if(s.due >= remaining){
+            s.due = parseFloat((s.due - remaining).toFixed(2));
+            remaining = 0;
+        } else {
+            remaining -= s.due;
+            s.due = 0;
+        }
+    });
+    
+    DB.duePayments.push({id:Date.now(), date, customer:name, amount:amt});
+    save(); initDueList(); showCustDue(); $('payAmt').value=''; toast('আদায় সফল');
+}
+
+function payVendorDue(){
+    if(!checkPermission('write')) return toast('অনুমোদন নেই (লক মোডে আছেন)','error');
+    if(!confirm('পরিশোধ সংরক্ষণ করবেন?')) return;
+    const name = $('vendueVend').value;
+    const amt = parseFloat($('vendPayAmt').value);
+    const date = $('vendPayDate').value || today();
+    if(!name || !amt || amt <= 0) return toast('তথ্য দিন','error');
+
+    let totalDue = 0;
+    const purchases = DB.purchases.filter(p=>{
+        const v=DB.vendors.find(x=>x.id===p.vendorId);
+        return v && v.name===name && p.due>0;
+    });
+    purchases.forEach(p=>totalDue+=p.due);
+
+    if(amt > totalDue) return toast('বাকির চেয়ে বেশি টাকা দিচ্ছেন!','error');
+
+    let remaining = amt;
+    purchases.sort((a,b)=>a.id-b.id);
+    purchases.forEach(p=>{
+        if(remaining <= 0) return;
+        if(p.due >= remaining){
+            p.due = parseFloat((p.due - remaining).toFixed(2));
+            remaining = 0;
+        } else {
+            remaining -= p.due;
+            p.due = 0;
+        }
+    });
+
+    DB.vendorDuePayments.push({id:Date.now(), date, vendorName:name, amount:amt});
+    save(); initVendorDueList(); showVendDue(); $('vendPayAmt').value=''; toast('পরিশোধ সফল');
+}
+</script>
+</body>
+</html>
