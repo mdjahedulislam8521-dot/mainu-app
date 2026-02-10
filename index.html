@@ -1101,6 +1101,52 @@ function payVendorDue(){
     DB.vendorDuePayments.push({id:Date.now(), date, vendorName:name, amount:amt});
     save(); initVendorDueList(); showVendDue(); $('vendPayAmt').value=''; toast('পরিশোধ সফল');
 }
+
+/* ================= AUTO SAVE SYSTEM ================= */
+
+// যেকোনো ইনপুট, সিলেক্ট, টেক্সট এরিয়া বদলালেই অটো সেভ
+document.addEventListener('input', () => {
+    save();
+});
+
+// ট্যাব / ব্রাউজার বন্ধের আগে সেভ
+window.addEventListener('beforeunload', () => {
+    save();
+});
+
+// পেজ লোড হলে আগের ডাটা লোড
+document.addEventListener('DOMContentLoaded', () => {
+    load();
+    initDefaults();
+});
 </script>
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('✅ Offline Ready'))
+        .catch(err => console.log('❌ SW Error', err));
+}
+</script>
+<script>
+/* ===== FINAL AUTO SAVE FIX ===== */
+
+document.addEventListener('input', function () {
+    if (typeof save === 'function') {
+        save();
+    }
+});
+
+window.addEventListener('beforeunload', function () {
+    if (typeof save === 'function') {
+        save();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof load === 'function') {
+        load();
+    }
+});
+<script>
 </body>
 </html>
